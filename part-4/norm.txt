@@ -1,0 +1,306 @@
+import React, { useState, useEffect } from 'react';
+import './App.css';
+
+const App = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [guests, setGuests] = useState(2);
+
+  const heroImages = [
+    'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80',
+    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80',
+    'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=2340&q=80'
+  ];
+
+  const rooms = [
+    {
+      id: 1,
+      name: 'Luxury Ocean Suite',
+      price: 450,
+      image: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      features: ['Ocean View', 'King Bed', 'Private Balcony', 'Jacuzzi'],
+      size: '65 m²'
+    },
+    {
+      id: 2,
+      name: 'Presidential Villa',
+      price: 850,
+      image: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      features: ['Private Pool', '2 Bedrooms', 'Butler Service', 'Wine Cellar'],
+      size: '120 m²'
+    },
+    {
+      id: 3,
+      name: 'Garden Deluxe',
+      price: 280,
+      image: 'https://images.unsplash.com/photo-1540518614846-7eded433c457?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      features: ['Garden View', 'Queen Bed', 'Marble Bathroom', 'Minibar'],
+      size: '45 m²'
+    }
+  ];
+
+  const amenities = [
+    { name: 'Free WiFi', desc: 'High-speed internet throughout', icon: '📶' },
+    { name: 'Valet Parking', desc: '24/7 complimentary service', icon: '🚗' },
+    { name: 'Room Service', desc: 'Available 24 hours daily', icon: '☕' },
+    { name: 'Infinity Pool', desc: 'Rooftop pool with city views', icon: '🏊' }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % heroImages.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + heroImages.length) % heroImages.length);
+  };
+
+  return (
+    <div className="app">
+      {/* Navigation */}
+      <nav className="navbar">
+        <div className="nav-container">
+          <div className="nav-brand">LUXE RESORT</div>
+          
+          <div className={`nav-links ${isMenuOpen ? 'nav-open' : ''}`}>
+            <a href="#home">Home</a>
+            <a href="#rooms">Rooms</a>
+            <a href="#amenities">Amenities</a>
+            <a href="#contact">Contact</a>
+          </div>
+
+          <button 
+            className="nav-toggle"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section id="home" className="hero">
+        <div className="hero-slider">
+          {heroImages.map((image, index) => (
+            <div
+              key={index}
+              className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
+            >
+              <img src={image} alt={`Hero ${index + 1}`} />
+            </div>
+          ))}
+        </div>
+
+        <button className="hero-btn prev" onClick={prevSlide}>
+          &#8249;
+        </button>
+        <button className="hero-btn next" onClick={nextSlide}>
+          &#8250;
+        </button>
+
+        <div className="hero-content">
+          <h1>ESCAPE TO PARADISE</h1>
+          <p>Experience luxury redefined at our exclusive beachfront resort</p>
+          <div className="rating">
+            <span className="stars">★★★★★</span>
+            <span>5-Star Luxury Resort</span>
+          </div>
+        </div>
+
+        <div className="hero-dots">
+          {heroImages.map((_, index) => (
+            <button
+              key={index}
+              className={`dot ${index === currentSlide ? 'active' : ''}`}
+              onClick={() => setCurrentSlide(index)}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* Booking Section */}
+      <section className="booking">
+        <div className="container">
+          <div className="booking-form">
+            <h2>Reserve Your Stay</h2>
+            <div className="form-grid">
+              <div className="form-group">
+                <label>Check In</label>
+                <input
+                  type="date"
+                  value={checkIn}
+                  onChange={(e) => setCheckIn(e.target.value)}
+                />
+              </div>
+              <div className="form-group">
+                <label>Check Out</label>
+                <input
+                  type="date"
+                  value={checkOut}
+                  onChange={(e) => setCheckOut(e.target.value)}
+                />
+              </div>
+              <div className="form-group">
+                <label>Guests</label>
+                <select
+                  value={guests}
+                  onChange={(e) => setGuests(Number(e.target.value))}
+                >
+                  {[1,2,3,4,5,6].map(num => (
+                    <option key={num} value={num}>{num} Guest{num > 1 ? 's' : ''}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="form-group">
+                <button className="btn-primary">BOOK NOW</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Rooms Section */}
+      <section id="rooms" className="rooms">
+        <div className="container">
+          <h2>Luxury Accommodations</h2>
+          <div className="rooms-grid">
+            {rooms.map((room) => (
+              <div
+                key={room.id}
+                className="room-card"
+                onClick={() => setSelectedRoom(room)}
+              >
+                <div className="room-image">
+                  <img src={room.image} alt={room.name} />
+                  <div className="room-price">${room.price}/night</div>
+                </div>
+                <div className="room-info">
+                  <h3>{room.name}</h3>
+                  <p className="room-size">{room.size}</p>
+                  <div className="room-features">
+                    {room.features.map((feature, index) => (
+                      <span key={index} className="feature-tag">{feature}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Amenities Section */}
+      <section id="amenities" className="amenities">
+        <div className="container">
+          <h2>World-Class Amenities</h2>
+          <div className="amenities-grid">
+            {amenities.map((amenity, index) => (
+              <div key={index} className="amenity-card">
+                <div className="amenity-icon">{amenity.icon}</div>
+                <h3>{amenity.name}</h3>
+                <p>{amenity.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section id="contact" className="contact">
+        <div className="container">
+          <h2>Get In Touch</h2>
+          <div className="contact-grid">
+            <div className="contact-info">
+              <h3>Contact Information</h3>
+              <div className="contact-item">
+                <strong>📍 Address</strong>
+                <p>123 Paradise Beach, Tropical Island 12345</p>
+              </div>
+              <div className="contact-item">
+                <strong>📞 Phone</strong>
+                <p>+1 (555) 123-4567</p>
+              </div>
+              <div className="contact-item">
+                <strong>✉️ Email</strong>
+                <p>reservations@luxeresort.com</p>
+              </div>
+            </div>
+            
+            <div className="contact-form">
+              <div className="form-group">
+                <input type="text" placeholder="Your Name" />
+              </div>
+              <div className="form-group">
+                <input type="email" placeholder="Your Email" />
+              </div>
+              <div className="form-group">
+                <textarea rows="4" placeholder="Your Message"></textarea>
+              </div>
+              <button 
+                className="btn-primary"
+                onClick={() => alert('Message sent! We will contact you soon.')}
+              >
+                Send Message
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="footer">
+        <div className="container">
+          <div className="footer-content">
+            <div className="footer-brand">LUXE RESORT</div>
+            <p>Experience the pinnacle of luxury hospitality</p>
+            <div className="footer-rating">
+              <span className="stars">★★★★★</span>
+            </div>
+            <p className="copyright">© 2024 Luxe Resort. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+
+      {/* Room Modal */}
+      {selectedRoom && (
+        <div className="modal-overlay" onClick={() => setSelectedRoom(null)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <img src={selectedRoom.image} alt={selectedRoom.name} />
+              <button 
+                className="modal-close"
+                onClick={() => setSelectedRoom(null)}
+              >
+                ×
+              </button>
+            </div>
+            <div className="modal-body">
+              <h3>{selectedRoom.name}</h3>
+              <p className="modal-price">${selectedRoom.price}/night</p>
+              <p className="modal-size">{selectedRoom.size}</p>
+              <div className="modal-features">
+                {selectedRoom.features.map((feature, index) => (
+                  <span key={index} className="feature-tag highlight">{feature}</span>
+                ))}
+              </div>
+              <button className="btn-primary">Book This Room</button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default App;
